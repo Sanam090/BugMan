@@ -8,9 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 namespace MyProject
 {
+    /// <summary>
+    /// 
+    /// 
+    /// </summary>
     public partial class Form1 : Form
     {
         public Form1()
@@ -22,6 +28,14 @@ namespace MyProject
         {
 
         }
+        /// <summary>
+        /// sql connection
+        /// data reading
+        /// condition applied
+        /// visibility to show the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -33,28 +47,37 @@ namespace MyProject
             com.CommandText = "Select id,First_Name,Last_Name,User_Type,Email,Password from registration where Email= '" + textBox1.Text + "' and Password ='"+textBox2.Text + "' ";    //selecting the value from database
             MySqlDataReader reader = com.ExecuteReader();              //to read the value from database
             String id= "";
-            String email = "";
-            String password = "";
+           
+            String type = "";
+
             while (reader.Read())
             {
-                if (textBox1.Text == "" || textBox2.Text == "")
-                {
-                  
+                type = reader["User_Type"].ToString();
+                id = reader["id"].ToString();
 
-                }
-                else if(textBox1.Text == "sanam" || textBox2.Text == "")
-                {
-                    email = reader["Email"].ToString();                //set the database value 
-                    id = reader["id"].ToString();
-                    password = reader["Password"].ToString();
-                   
-                    MessageBox.Show("Login Succesfull");
-                    this.Hide();
-                    dashboard bg = new dashboard(id);                  //object created of dashbaord class
-                    bg.Show();                                              //show the next class
-                }
             }
-           
+            if (type.Equals("Admin"))
+            {
+                board d = new board(id);
+                d.Show();
+                Visible = false;
+                MessageBox.Show("Welcome Admin");
+            }
+            else if (type.Equals("programer"))
+            {
+                board d = new board(id);
+                d.Show();
+                Visible = false;
+                MessageBox.Show("Welcome Programmer");
+            }
+            else
+            {
+                board d = new board(id);
+                d.Show();
+                Visible = false;
+                MessageBox.Show("Welcome User");
+            }
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -71,6 +94,34 @@ namespace MyProject
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+
+                IWebDriver driver = new ChromeDriver();
+                // Launch the ToolsQA WebSite
+                driver.Url = ("https://github.com/Sanam090/BugMan.git");
+
+                // Type Name in the FirstName text box      
+                //driver.FindElement(By.Name("firstname")).SendKeys("Lakshay");
+                driver.FindElement(By.Id("login_field")).SendKeys("davidvilla.sanam@gmail.com");
+
+                //Type LastName in the LastName text box
+                driver.FindElement(By.Id("password")).SendKeys("asdfghjkl12345");
+
+                // Click on the Submit button
+                driver.FindElement(By.Name("commit")).Click();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
 
         }
     }
